@@ -9,7 +9,7 @@ app.get('/worker/available-port', (req: Request, res: Response) => {
     const cmd = shell.exec('/bin/bash /opt/worker/scripts/available-port.sh 10000 10005')
     const port = Number(cmd.stdout.replace('\n', ''))
     console.log(cmd)
-    res.send({ availablePort: port })
+    res.send({ availablePort: port || null })
 })
 
 app.get('/worker/start-container', (req: any, res: any) => {
