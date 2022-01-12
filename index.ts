@@ -4,7 +4,7 @@ const port = 3000
 import shell from 'shelljs'
 
 app.get('/available-port', (req: any, res: any) => {
-    const cmd = shell.exec('/opt/worker/scripts/open-port')
+    const cmd = shell.exec('/opt/worker/scripts/available-port.sh 10000 10005')
     console.log(cmd)
     res.send(cmd)
 })
