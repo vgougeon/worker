@@ -1,0 +1,33 @@
+- name: Déploiement de serveur nginx
+  hosts: localhost
+  become: true
+  vars:
+    image: nginx:latest
+    image_name: nginx
+    #container_name: build_container
+    #    git_url: https://github.com/vgougeon/site.git
+
+  tasks:
+    - name: Create directory
+      file:
+        path: "/repo/{{ project_id }}"
+        state: directory
+        mode: 0755
+
+    - name: Pull repo
+      git:
+        repo: '{{ git_url }}'
+        dest: "/repo/{{ project_id }}"
+        clone: yes
+        force: yes
+
+    - name: Create container
+      docker_container:
+        image: '{{ image }}'
+        name: '{{ container_name }}'
+        state: started
+        restart_policy: unless-stopped
+        ports: 
+        - '{{ public_port }}:{{ local_port }}'
+        volumes:
+        - '/repo/{{ project_id }}:/usr/share/nginx/html'
