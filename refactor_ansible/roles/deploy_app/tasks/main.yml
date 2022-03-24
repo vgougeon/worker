@@ -1,0 +1,54 @@
+---
+- name: Prerequiste
+  include_tasks: prerequistes.yml
+  
+- name: Verify availaible port
+  shell: 'bash /opt/scripts/availaible-port.sh {{ first_port }} {{ last_port }}'
+  register: _public_port
+
+- name: Debug
+  debug: 
+    msg: '{{ _public_port.stdout }}'
+
+- name: Create directory
+  file:
+    path: "/opt/data/{{ project_id }}"
+    state: directory
+    mode: '0755'
+
+- name: Pull repo
+  git:
+    repo: '{{ git_url }}'
+    dest: "/opt/data/{{ project_id }}"
+    clone: true
+    force: true
+
+- name: Create nginx container
+  docker_container:
+    image: '{{ nginx_tags }}'
+    name: '{{ project_id }}'
+    state: started
+    restart_policy: unless-stopped
+    ports: 
+    - '{{ _public_port.stdout }}:80'
+    volumes:
+    - '/opt/data/{{ project_id }}:/usr/share/nginx/html'
+  when: project_type == "nginx"
+
+- name: Create nodejs container
+  docker_container:
+    name: "{{ project_id }}"
+    image: "{{ nodejs_image }}"
+    state: started
+    restart_policy: unless-stopped
+    ports:
+          - "3333:3333"
+          - "4200:4200"
+    volumes:
+      - '/opt/data/{{ project_id }}:/home/node/app'
+    working_dir: '/home/node/app'
+    command:
+      - "npm install"
+      - "npm run build"
+      - "npm run start"
+  when: project_type == "nodejs"

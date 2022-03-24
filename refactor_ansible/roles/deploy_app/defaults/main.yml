@@ -1,0 +1,8 @@
+---
+first_port: 10000
+last_port: 200000
+nginx_tags: nginx:latest
+nodejs_image: node:17-buster
+#project_id: 30
+#project_type:
+#git_url: https://github.com/vgougeon/site.git

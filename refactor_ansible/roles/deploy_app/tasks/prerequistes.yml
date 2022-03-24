@@ -1,0 +1,15 @@
+---
+- name: Create directory
+  file:
+    path: "/opt/scripts"
+    state: directory
+    mode: '0755'
+
+- name: Copy availaible-port.sh 
+  copy:
+    src: "files/{{ item }}"
+    dest: "/opt/scripts/{{ item }}"
+    mode: '0755'
+  loop:
+    - "availaible-port.sh"
+    - "project-status.sh"
