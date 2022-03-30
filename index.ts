@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 import { Request, Response } from 'express'
-import shell from 'shelljs'
+import shell from 'shelljs';
 
 app.get('/worker/available-port', (req: Request, res: Response) => {
     console.log(req.ip)
@@ -12,12 +12,24 @@ app.get('/worker/available-port', (req: Request, res: Response) => {
     res.send({ availablePort: port || null })
 })
 
-app.get('/worker/start-container', (req: any, res: any) => {
-    res.send('Not implemented')
+app.get('/worker/start-container', async (req: any, res: any) => {
+    console.log(req.body)
+    try {
+        let cmd = await shell.exec(`ansible-playbook -vv deploy.yml  --extra-vars "git_url=${req.body.url} project_id=${req.body.id} project_type=${req.body.template}"`, {async:true})
+        res.send('SUCCESS')
+    }
+    catch {
+        res.status(400).send('FAILED')
+        let cmd = await shell.exec(`ansible-playbook -vv deploy.yml  --extra-vars "git_url=${req.body.url} project_id=${req.body.id} project_type=${req.body.template}"`, {async:true})
+        console.log(cmd)
+    }
+    
 })
 
 app.get('/worker/projet-status', (req: any, res: any) => {
-    res.send('Not implemented')
+    console.log('PROJECT STATUS', req.body)
+    const cmd = shell.exec(`/bin/bash /opt/worker/scripts/project-status.sh ${req.body.id}`)
+    res.send({ cmd })
 })
 
 app.listen(port, () => {
