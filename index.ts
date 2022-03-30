@@ -4,6 +4,9 @@ const port = 3000
 import { Request, Response } from 'express'
 import shell from 'shelljs';
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
 app.get('/worker/available-port', (req: Request, res: Response) => {
     console.log(req.ip)
     const cmd = shell.exec('/bin/bash /opt/worker/scripts/available-port.sh 10000 10005')
@@ -25,7 +28,7 @@ app.post('/worker/start-container', async (req: any, res: any) => {
     }
 })
 
-app.post('/worker/projet-status', (req: any, res: any) => {
+app.post('/worker/project-status', (req: any, res: any) => {
     console.log('PROJECT STATUS', req.body)
     const cmd = shell.exec(`/bin/bash /opt/worker/scripts/project-status.sh ${req.body.id}`)
     res.send({ cmd })
