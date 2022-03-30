@@ -6,10 +6,6 @@
   shell: 'bash /opt/scripts/availaible-port.sh {{ first_port }} {{ last_port }}'
   register: _public_port
 
-- name: Debug
-  debug: 
-    msg: '{{ _public_port.stdout }}'
-
 - name: Create directory
   file:
     path: "/opt/data/{{ project_id }}"
@@ -52,3 +48,18 @@
       - "npm run build"
       - "npm run start"
   when: project_type == "nodejs"
+
+- name: Create php container
+  docker_container:
+    name: "{{ project_id }}"
+    image: "{{ php_image }}"
+    state: started
+    restart_policy: unless-stopped
+    ports:
+    - '{{ _public_port.stdout }}:9000'
+    working_dir: '/var/www/{{ project_id }}'
+    volumes:
+      - '/opt/data/{{ project_id }}:/var/www/{{ project_id }}'
+    command:
+      - 'php index.php'
+  when: project_type == "php"
