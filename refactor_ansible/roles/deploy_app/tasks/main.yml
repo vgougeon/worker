@@ -22,7 +22,7 @@
 - name: Create nginx container
   docker_container:
     image: '{{ nginx_tags }}'
-    name: '{{ project_id }}_'
+    name: '{{ project_id }}-'
     state: started
     restart_policy: unless-stopped
     ports: 
@@ -33,7 +33,7 @@
 
 - name: Create nodejs container
   docker_container:
-    name: "{{ project_id }}_"
+    name: "{{ project_id }}-"
     image: "{{ nodejs_image }}"
     state: started
     restart_policy: unless-stopped
@@ -51,7 +51,7 @@
 
 - name: Create php container
   docker_container:
-    name: "{{ project_id }}_"
+    name: "{{ project_id }}-"
     image: "{{ php_image }}"
     state: started
     restart_policy: unless-stopped
