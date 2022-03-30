@@ -15,12 +15,12 @@ app.get('/worker/available-port', (req: Request, res: Response) => {
 app.post('/worker/start-container', async (req: any, res: any) => {
     console.log(req.body)
     try {
-        let cmd = await shell.exec(`ansible-playbook -vv deploy.yml  --extra-vars "git_url=${req.body.url} project_id=${req.body.id} project_type=${req.body.template}"`, {async:true})
+        let cmd = await shell.exec(`ansible-playbook -vv /opt/worker/refactor_ansible/deploy.yml  --extra-vars "git_url=${req.body.url} project_id=${req.body.id} project_type=${req.body.template}"`, {async:true})
         res.send('SUCCESS')
     }
     catch {
         res.status(400).send('FAILED')
-        let cmd = await shell.exec(`ansible-playbook -vv deploy.yml  --extra-vars "git_url=${req.body.url} project_id=${req.body.id} project_type=${req.body.template}"`, {async:true})
+        let cmd = await shell.exec(`ansible-playbook -vv /opt/worker/refactor_ansible/deploy.yml  --extra-vars "git_url=${req.body.url} project_id=${req.body.id} project_type=${req.body.template}"`, {async:true})
         console.log(cmd)
     }
 })
