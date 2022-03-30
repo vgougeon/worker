@@ -38,8 +38,7 @@
     state: started
     restart_policy: unless-stopped
     ports:
-          - "3333:3333"
-          - "4200:4200"
+    - '{{ _public_port.stdout }}:3000'
     volumes:
       - '/opt/data/{{ project_id }}:/home/node/app'
     working_dir: '/home/node/app'
