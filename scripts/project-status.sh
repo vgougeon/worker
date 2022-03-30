@@ -7,5 +7,3 @@ if [ "$(docker ps -a | grep $project_id)" ]; then
     port=$(docker port $project_id)
     echo "${stats}_${port}"
 fi
-
-
