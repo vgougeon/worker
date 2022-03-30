@@ -12,7 +12,7 @@ app.get('/worker/available-port', (req: Request, res: Response) => {
     res.send({ availablePort: port || null })
 })
 
-app.get('/worker/start-container', async (req: any, res: any) => {
+app.post('/worker/start-container', async (req: any, res: any) => {
     console.log(req.body)
     try {
         let cmd = await shell.exec(`ansible-playbook -vv deploy.yml  --extra-vars "git_url=${req.body.url} project_id=${req.body.id} project_type=${req.body.template}"`, {async:true})
@@ -23,10 +23,9 @@ app.get('/worker/start-container', async (req: any, res: any) => {
         let cmd = await shell.exec(`ansible-playbook -vv deploy.yml  --extra-vars "git_url=${req.body.url} project_id=${req.body.id} project_type=${req.body.template}"`, {async:true})
         console.log(cmd)
     }
-    
 })
 
-app.get('/worker/projet-status', (req: any, res: any) => {
+app.post('/worker/projet-status', (req: any, res: any) => {
     console.log('PROJECT STATUS', req.body)
     const cmd = shell.exec(`/bin/bash /opt/worker/scripts/project-status.sh ${req.body.id}`)
     res.send({ cmd })
